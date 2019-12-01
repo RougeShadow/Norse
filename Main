@@ -1,0 +1,454 @@
+extends AnimatedSprite
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = "text"
+
+# Called when the node enters the scene tree for the first time.
+
+extends KinematicBody2D
+const KICKOFF =  50000
+var GRAVITY = 4
+const DRAG = 0.05
+const ACCELERATION =7
+var motion = Vector2()
+var on_air_time = 100
+var jumping = false
+var jump = 165
+var walltime = 5
+var timer = Timer.new()
+var air = false
+func _ready():
+	timer = Timer.new()
+	timer.set_wait_time(0.5)
+	timer.connect("timeout",self,"_on_timer_timeout")
+	add_child(timer)
+
+func _on_timer_timeout():
+
+		
+		print(5)
+#jump height
+func _physics_process(delta):
+	
+	motion.y += GRAVITY
+	move_and_slide(motion)
+	if is_on_floor() == false and is_on_ceiling() == false and is_on_wall() ==false:
+		air = true
+		
+	if Input.is_key_pressed(KEY_D):
+		print(motion.x)
+		if is_on_floor() and is_on_wall() ==false:
+			motion.x += ACCELERATION / 15
+		if air == true:
+			motion.x += ACCELERATION
+ 		move_and_slide(motion)
+	if Input.is_key_pressed(KEY_A):
+        motion.x -= ACCELERATION
+ 
+        
+	
+        
+	if is_on_floor():
+		on_air_time = 0
+		motion.y = 0
+		
+	motion.x -= motion.x * DRAG
+	if motion.x <= 5 and motion.x >= 0 or  motion.x >= -5 and motion.x <= 0 :
+	    motion.x = 0
+	move_and_slide(motion,Vector2(0,-1))
+	
+	if is_on_floor() and Input.is_key_pressed(KEY_SPACE):
+		
+		
+		motion.y = -jump
+		
+	if Input.is_key_pressed(KEY_SPACE):
+		$AnimatedSprite.play("jumpe")
+		
+	if is_on_wall():
+		
+		GRAVITY = 1
+		
+	if is_on_wall() == false:
+		GRAVITY = 4
+		
+	if is_on_wall() and Input.is_key_pressed(KEY_SPACE):
+		if motion.x > 0 and Input.is_key_pressed(KEY_D) :
+				
+				motion.x = -ACCELERATION*50
+				motion.y = -jump/1.2
+				
+				
+					
+				
+		
+		if motion.x < 0 and Input.is_key_pressed(KEY_A):
+			motion.x = ACCELERATION*50
+			motion.y = -jump/1.2
+		
+	else:
+		$AnimatedSprite.frame = 0
+		$AnimatedSprite.stop()
+
+
+
+		
+
+func _on_Camera2D_move():
+	pass # Replace with function body.
+
+extends Camera2D
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = "text"
+
+
+
+extends CollisionShape2D
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = "text"
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
+
+[gd_resource type="Environment" load_steps=2 format=2]
+
+[sub_resource type="ProceduralSky" id=1]
+
+[resource]
+background_mode = 2
+background_sky = SubResource( 1 )
+
+
+[gd_scene load_steps=31 format=2]
+
+[ext_resource path="res://Body.gd" type="Script" id=1]
+[ext_resource path="res://Sprite/Hod_Anims/Hod-Jump_0000_19.png" type="Texture" id=2]
+[ext_resource path="res://Sprite/Hod_Anims/Hod-Jump_0001_18.png" type="Texture" id=3]
+[ext_resource path="res://Sprite/Hod_Anims/Hod-Jump_0002_17.png" type="Texture" id=4]
+[ext_resource path="res://Sprite/Hod_Anims/Hod-Jump_0003_16.png" type="Texture" id=5]
+[ext_resource path="res://Sprite/Hod_Anims/Hod-Jump_0004_15.png" type="Texture" id=6]
+[ext_resource path="res://Sprite/Hod_Anims/Hod-Jump_0005_14.png" type="Texture" id=7]
+[ext_resource path="res://Sprite/Hod_Anims/Hod-Jump_0006_13.png" type="Texture" id=8]
+[ext_resource path="res://Sprite/Hod_Anims/Hod-Jump_0007_12.png" type="Texture" id=9]
+[ext_resource path="res://Sprite/Hod_Anims/Hod-Jump_0008_11.png" type="Texture" id=10]
+[ext_resource path="res://Sprite/Hod_Anims/Hod-Jump_0009_10.png" type="Texture" id=11]
+[ext_resource path="res://Sprite/Hod_Anims/Hod-Jump_0010_9.png" type="Texture" id=12]
+[ext_resource path="res://Sprite/Hod_Anims/Hod-Jump_0011_8.png" type="Texture" id=13]
+[ext_resource path="res://Sprite/Hod_Anims/Hod-Jump_0012_7.png" type="Texture" id=14]
+[ext_resource path="res://Sprite/Hod_Anims/Hod-Jump_0013_6.png" type="Texture" id=15]
+[ext_resource path="res://Sprite/Hod_Anims/Hod-Jump_0014_5.png" type="Texture" id=16]
+[ext_resource path="res://Sprite/Hod_Anims/Hod-Jump_0015_4.png" type="Texture" id=17]
+[ext_resource path="res://Sprite/Hod_Anims/Hod-Jump_0016_3.png" type="Texture" id=18]
+[ext_resource path="res://Sprite/Hod_Anims/Hod-Jump_0017_2.png" type="Texture" id=19]
+[ext_resource path="res://Sprite/Hod_Anims/Hod-Jump_0018_1.png" type="Texture" id=20]
+[ext_resource path="res://AnimatedSprite.gd" type="Script" id=21]
+[ext_resource path="res://CollisionShape2D.gd" type="Script" id=22]
+[ext_resource path="res://Game Background/Stone_Block_.png" type="Texture" id=23]
+[ext_resource path="res://Game Background/Roof_Stone_Block.png" type="Texture" id=24]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [  ],
+"loop": true,
+"name": "Run_L",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 13 ), ExtResource( 14 ), ExtResource( 15 ), ExtResource( 16 ), ExtResource( 17 ), ExtResource( 18 ), ExtResource( 19 ), ExtResource( 20 ) ],
+"loop": true,
+"name": "jumpe",
+"speed": 5.0
+}, {
+"frames": [ null, null, null, null, null, null, null ],
+"loop": true,
+"name": "run",
+"speed": 10.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 28.4144, 41.5171 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 3452.6, 38.2667 )
+
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 731.469, 52.0934 )
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 279.645, 13.5257 )
+
+[sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 24.2869, 595.912 )
+
+[node name="node" type="Node2D"]
+position = Vector2( 189.341, -90.3543 )
+
+[node name="Body" type="KinematicBody2D" parent="."]
+position = Vector2( 102.824, 740.183 )
+script = ExtResource( 1 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="Body"]
+position = Vector2( -8.89849, -5.82794 )
+scale = Vector2( 2.00104, 1.83323 )
+frames = SubResource( 1 )
+animation = "jumpe"
+frame = 1
+speed_scale = 3.0
+script = ExtResource( 21 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Body"]
+position = Vector2( -1.82076, -4.01735 )
+shape = SubResource( 2 )
+script = ExtResource( 22 )
+
+[node name="Timer" type="Timer" parent="Body"]
+wait_time = 0.47
+one_shot = true
+
+[node name="Camera2D" type="Camera2D" parent="Body"]
+current = true
+smoothing_enabled = true
+drag_margin_left = 0.74
+drag_margin_top = 0.74
+drag_margin_right = 0.74
+drag_margin_bottom = 0.74
+editor_draw_limits = true
+editor_draw_drag_margin = true
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2( 343.386, 178.514 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2( 211.173, 1194.61 )
+shape = SubResource( 3 )
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="."]
+position = Vector2( 642.991, 202.663 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
+position = Vector2( -851.715, 1192.18 )
+rotation = -1.58746
+shape = SubResource( 4 )
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="."]
+position = Vector2( 803.064, 193.23 )
+rotation = -1.58746
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D3"]
+position = Vector2( -399.384, -982.94 )
+rotation = 0.0284165
+shape = SubResource( 5 )
+
+[node name="StaticBody2D4" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D4"]
+position = Vector2( 2405.37, 1466.58 )
+rotation = -0.0107957
+shape = SubResource( 6 )
+
+[node name="Stone_Block_" type="Sprite" parent="."]
+position = Vector2( 84.6157, 1451.96 )
+scale = Vector2( 40, 1 )
+texture = ExtResource( 23 )
+
+[node name="Roof_Stone_Block" type="Sprite" parent="Stone_Block_"]
+position = Vector2( 73.4092, -565.814 )
+scale = Vector2( -5.34134, 1.3526 )
+texture = ExtResource( 24 )
+
+[node name="Roof_Stone_Block" type="Sprite" parent="."]
+position = Vector2( -285.825, 1154.17 )
+scale = Vector2( 1, 1.54133 )
+texture = ExtResource( 24 )
+
+[node name="Roof_Stone_Block2" type="Sprite" parent="."]
+position = Vector2( 2494.56, 1173.96 )
+scale = Vector2( 1, 1.22677 )
+texture = ExtResource( 24 )
+
+
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/HOdrf.png-2838b8024fe761a8d7ba932600fe1895.stex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://HOdrf.png"
+dest_files=[ "res://.import/HOdrf.png-2838b8024fe761a8d7ba932600fe1895.stex" ]
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/bptc_ldr=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=true
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+process/invert_color=false
+stream=false
+size_limit=0
+detect_3d=true
+svg/scale=1.0
+
+
+
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/icon.png-487276ed1e3a0c39cad0279d744ee560.stex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://icon.png"
+dest_files=[ "res://.import/icon.png-487276ed1e3a0c39cad0279d744ee560.stex" ]
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/bptc_ldr=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=true
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+process/invert_color=false
+stream=false
+size_limit=0
+detect_3d=true
+svg/scale=1.0
+
+
+extends Node2D
+
+
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = "text"
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
+
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[  ]
+_global_script_class_icons={
+
+}
+
+[application]
+
+config/name="practiceprojj"
+run/main_scene="res://Hodr.tscn"
+config/icon="res://icon.png"
+
+[rendering]
+
+environment/default_environment="res://default_env.tres"
+
+
+
+extends RigidBody2D
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = "text"
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+	 # Replace with function body.
+func _process(delta):
+	if Input.is_key_pressed(KEY_W):
+		self.position.y-=5
+	elif Input.is_key_pressed(KEY_D):
+		
+			$AnimatedSprite.play("Run_L")
+			self.position.x+=5
+	elif Input.is_key_pressed(KEY_SHIFT):
+			self.position.x+=10
+	elif Input.is_key_pressed(KEY_S):
+		self.position.y+=5
+	elif Input.is_key_pressed(KEY_A):
+		$AnimatedSprite.play("run")
+		self.position.x-=5
+		
+		if Input.is_key_pressed(KEY_SHIFT):
+					self.position.x-=10
+					$AnimatedSprite.play("run")
+	else:
+		$AnimatedSprite.stop()
+extends Sprite
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = "text"
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+	
+func _process(delta):
+	
+	if Input.is_key_pressed(KEY_W):
+		self.position.y-=5
+	if Input.is_key_pressed(KEY_A):
+		self.position.x-=5
+	if Input.is_key_pressed(KEY_S):
+		self.position.y+=5
+	if Input.is_key_pressed(KEY_D):
+		if Input.is_key_pressed(KEY_SHIFT):
+			self.position.x+=10
+		else:
+			self.position.x+=5
+			
+		
+	 	
+	
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
